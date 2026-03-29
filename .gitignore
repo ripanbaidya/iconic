@@ -1,71 +1,90 @@
-# IDE / Editor
+# =============================================================================
+# ICONIC — Root .gitignore
+# Monorepo: Spring Boot microservices (Java 21) + React 19 (TypeScript) frontend
+# IDEs: IntelliJ IDEA + VS Code
+# =============================================================================
+
+
+# =============================================================================
+# IDE — IntelliJ IDEA
+# =============================================================================
 .idea/
-.vscode/
-!.vscode/extensions.json
 *.iws
 *.iml
 *.ipr
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+out/
+.idea_modules/
+
+
+# =============================================================================
+# IDE — VS Code
+# =============================================================================
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
 *.sw?
 *.swp
 
-# OS
+
+# =============================================================================
+# OS — macOS
+# =============================================================================
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
+
+# OS — Windows
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
-# Environment/ Secrets
-# NEVER commit real .env files
+
+# =============================================================================
+# SECRETS & ENVIRONMENT
+# NEVER commit real credentials, API keys, or secrets
+# Use .env.example as a template — commit that, never the real .env
+# =============================================================================
 *.env
 .env
 .env.local
 .env.*.local
 !.env.example
 
-# Backend (Java / Maven)
-backend/target/
-backend/.mvn/wrapper/maven-wrapper.jar
-!backend/**/src/main/**/target/
-!backend/**/src/test/**/target/
+# Spring Cloud Vault / secrets
+secrets/
+*.secret
 
-# Frontend (Node)
-frontend/node_modules/
-frontend/dist/
-frontend/dist-ssr/
-frontend/*.local
-frontend/.eslintcache
-
-# Docker
-# Don't ignore docker files, but ignore any local overrides
-docker-compose.override.yml
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Keys / Certs
-# *.pem files in backend/src/main/resources/keys/ are dev-only test keys
-# For production, inject via environment variables / secrets manager
-# Uncomment below if you want to block ALL pem files:
+# Keys & Certificates
+# Dev-only test keys live in src/main/resources/keys/ — those are safe
+# Production keys must NEVER be committed — inject via env vars or Vault
 *.pem
 *.key
 *.crt
+*.p12
+*.jks
+*.keystore
+*.truststore
 
-# Misc
-*.class
-*.jar
-!**/src/main/**/target/*.jar
+
+# =============================================================================
+# BACKEND — Java / Maven
+# All microservices live under /services/*
+# =============================================================================
+
+# Maven build output (all services)
+services/*/target/
+services/*/.mvn/repository/
+
+# Maven wrapper jar (generated, not needed in repo)
+**/maven-wrapper.jar
+
+# Keep compiled test/main source targets out but allow source dirs
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Spring Boot specific
 HELP.md
 .apt_generated
 .classpath
@@ -74,11 +93,112 @@ HELP.md
 .settings
 .springBeans
 .sts4-cache
+
+# Compiled class files
+*.class
+
+# Packaged jars — except the ones Maven produces in target/ (already excluded above)
+*.jar
+*.war
+*.ear
+*.nar
+
+# NetBeans
 /nbproject/private/
 /nbbuild/
-/dist/
 /nbdist/
 /.nb-gradle/
+
+# Build dirs (Gradle — if ever adopted)
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+
+# =============================================================================
+# FRONTEND — React 19 + TypeScript (Vite 8)
+# Frontend lives under /frontend
+# =============================================================================
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.cache/
+frontend/*.local
+frontend/.eslintcache
+frontend/.stylelintcache
+frontend/coverage/
+frontend/storybook-static/
+
+# Vite
+frontend/.vite/
+
+# TypeScript build info
+frontend/tsconfig.tsbuildinfo
+frontend/**/*.tsbuildinfo
+
+
+# =============================================================================
+# DOCKER
+# Compose override files are local only — never commit real overrides
+# docker-compose.yml and docker-compose.dev.yml are committed
+# docker-compose.override.yml is local machine-specific
+# =============================================================================
+docker/docker-compose.override.yml
+docker/.env
+docker/**/.env
+
+
+# =============================================================================
+# LOGS
+# =============================================================================
+logs/
+*.log
+*.log.*
+
+# Node package manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Spring Boot log files
+spring.log
+
+
+# =============================================================================
+# OBSERVABILITY — Local data volumes (Prometheus, Grafana, Zipkin)
+# These are mounted Docker volumes — generated data, not source
+# =============================================================================
+observability/prometheus/data/
+observability/grafana/data/
+observability/zipkin/data/
+
+
+# =============================================================================
+# HELM — Generated / dependency charts
+# =============================================================================
+helm/*/charts/
+helm/*/*.lock
+
+
+# =============================================================================
+# INFRA — Terraform state (if ever added)
+# =============================================================================
+infra/**/.terraform/
+infra/**/terraform.tfstate
+infra/**/terraform.tfstate.backup
+infra/**/*.tfvars
+!infra/**/*.tfvars.example
+
+
+# =============================================================================
+# MISC
+# =============================================================================
+*.tmp
+*.temp
+*.bak
+*.orig
+*.patch
+.cache/
+tmp/
+temp/
