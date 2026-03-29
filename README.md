@@ -12,3 +12,6 @@ A production-grade distributed salon booking platform built with Spring Boot 3.5
 - observability via Prometheus + Grafana
 - Redis caching
 - Full deployment on Kubernetes with Helm
+
+## Architecture
+![architecture](/public/diagrams/architecture.jpeg)
